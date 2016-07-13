@@ -1,0 +1,23 @@
+<html>
+  <head>
+
+  </head>
+  <body>
+    <h1>ServiceWorker Test Page</h1>
+  </body>
+  <script>
+      if (navigator.serviceWorker) {
+          // service-worker.jsをService Workerとして登録する
+        navigator.serviceWorker.register('./sw.js', {
+          scope: '.'
+        }).then(function onFulfilled () {
+          // service-worker.jsがひと通り評価され、インストールが成功した場合
+          console.log('Service Worker was installed.');
+        }, function onRejected () {
+          // service-worker.jsのインストールが失敗した場合
+          console.log('Service Worker was not installed.');
+        });
+      }
+
+  </script>
+</html>

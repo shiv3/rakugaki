@@ -1,0 +1,55 @@
+<html>
+  <body>
+    <h1>This is No Web Worker DEMO Page</h1>
+
+    <img src="http://aliceplanblog.com/wp-content/uploads/2014/08/mario.gif" id="mario" height="100px">
+    <br>
+
+    <button onclick="UIStart()">UIStart</button>
+    <button onclick="UIstop()">UIStop</button>
+    <button onclick="StartHeavyFunc()">StartHeavyFunc</button>
+    <div id="result"></div>
+
+    <script>
+      let img = document.querySelector("#mario");
+      var left=0;
+      var plus=6;
+      var scale=1
+      function move(){
+        img.style.paddingLeft = left += plus;
+        if(left>400||left<0){
+          plus *= -1;
+          img.style.transform="scaleX(" +  scale  + ")"
+        }
+      }
+      var setI;
+      function UIStart() {
+        setI = setInterval(move,20);
+      }
+      function UIstop() {
+        clearInterval(setI)
+      }
+      function calcPrimes(data) {
+          var primes = [];
+          if (data >= 2) primes.push(2);
+          for (i = 3; i <= data; i += 2) {
+              for (j = 0; i > primes[j] * primes[j] && i % primes[j] != 0; j++);
+              if (i < primes[j] * primes[j]) primes.push(i);
+          }
+          return primes.length;
+      }
+      function HeavyFunc(num){
+        cnt = calcPrimes(num);
+        return cnt;
+      }
+      function StartHeavyFunc() {
+        document.querySelector("#result").textContent +="重たい処理がスタートしました";
+        document.querySelector("#result").textContent += "10000000までの素数は" + HeavyFunc(10000000) + "個です";
+      }
+
+
+    </script>
+
+  </body>
+
+</html>

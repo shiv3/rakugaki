@@ -1,0 +1,77 @@
+<html>
+  <body>
+    <h1>This is Web Worker DEMO Page</h1>
+    <img src="http://aliceplanblog.com/wp-content/uploads/2014/08/mario.gif" id="mario" height="100px">
+    <br>
+    <button onclick="UIStart()">UIStart</button>
+    <button onclick="UIstop()">UIStop</button>
+    <button onclick="StartHeavyFunc()">StartHeavyFunc</button>
+
+
+    <div id="result"></div>
+    <script id="task1" type="javascript/worker">
+      function calcPrimes(data) {
+          var primes = [];
+          if (data >= 2) primes.push(2);
+          for (i = 3; i <= data; i += 2) {
+              for (j = 0; i > primes[j] * primes[j] && i % primes[j] != 0; j++);
+              if (i < primes[j] * primes[j]) primes.push(i);
+          }
+          return primes.length;
+      }
+      function HeavyFunc(num){
+        return calcPrimes(num);
+      }
+      self.addEventListener('message', function(e) {
+        var data = e.data;
+        switch (data.cmd) {
+          case 'heavy':
+            var res = HeavyFunc(Number(data.msg))
+            self.postMessage(res);
+            break;
+          default:
+            self.postMessage('Unknown command: ' + data.msg);
+        };
+      }, false);
+    </script>
+
+    <script>
+
+      let img = document.querySelector("#mario");
+      var left=0;
+      var plus=6;
+      var scale=1
+      function move(){
+        img.style.paddingLeft = left += plus;
+        if(left>400||left<0){
+          plus *= -1;
+          img.style.transform="scaleX(" +  scale  + ")"
+        }
+      }
+      var setI;
+      function UIStart() {
+        setI = setInterval(move,20);
+      }
+      function UIstop() {
+        clearInterval(setI)
+      }
+      
+      function StartHeavyFunc() {
+        document.querySelector("#result").textContent +="重たい処理がスタートしました";
+        worker.postMessage({'cmd': 'heavy', 'msg': '10000000'});
+      }
+
+
+      var bb = new Blob([document.querySelector('#task1').textContent],{type:"text\/javascript"});
+      var worker = new Worker(window.URL.createObjectURL(bb));
+
+      worker.addEventListener('message', function(e) {
+        document.querySelector("#result").textContent += "10000000までの素数は" + e.data + "個です";
+      }, false);
+
+
+    </script>
+
+  </body>
+
+</html>
