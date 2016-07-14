@@ -1,7 +1,7 @@
 <html>
   <head>
   <style>
-      #mario {
+      #image {
         position: relative;
         top: 0;
         left: 0;
@@ -13,7 +13,7 @@
   </head>
   <body>
     <h1>This is Web Worker DEMO Page</h1>
-    <img src="http://aliceplanblog.com/wp-content/uploads/2014/08/mario.gif" id="mario" height="100px">
+    <img src="../img.jpg" id="image" height="100px">
     <br>
     <button onclick="UIStart()">UIStart</button>
     <button onclick="StartHeavyFunc()">StartHeavyFunc</button>
@@ -47,7 +47,7 @@
     </script>
 
     <script>
-      let img = document.querySelector("#mario");
+      let img = document.querySelector("#image");
       addEventListener("transitionend",function(){
         img.style.transform = "translate(0px, 0px)";
       }, true);
