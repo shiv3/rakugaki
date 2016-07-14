@@ -1,5 +1,15 @@
 <html>
   <head>
+    <style>
+        #mario {
+          position: relative;
+          top: 0;
+          left: 0;
+          width: 100px;
+          height: 100px;
+          transition: all 2s ease-in-out;
+        }
+      </style>
     <script src="parallel.js"></script>
   </head>
   <body>
@@ -7,11 +17,10 @@
     <img src="http://aliceplanblog.com/wp-content/uploads/2014/08/mario.gif" id="mario" height="100px">
     <br>
     <button onclick="UIStart()">UIStart</button>
-    <button onclick="UIstop()">UIStop</button>
     <button onclick="StartHeavyFunc()">StartHeavyFunc</button>
 
     <div id="result"></div>
-    
+
   </body>
   <script>
 
@@ -36,24 +45,12 @@
   </script>
 
   <script>
-
     let img = document.querySelector("#mario");
-    var left=0;
-    var plus=6;
-    var scale=1
-    function move(){
-      img.style.paddingLeft = left += plus;
-      if(left>400||left<0){
-        plus *= -1;
-        img.style.transform="scaleX(" +  scale  + ")"
-      }
-    }
-    var setI;
+    addEventListener("transitionend",function(){
+      img.style.transform = "translate(0px, 0px)";
+    }, true);
     function UIStart() {
-      setI = setInterval(move,20);
-    }
-    function UIstop() {
-      clearInterval(setI)
+      img.style.transform = "translate(400px, 0px)";
     }
   </script>
 </html>

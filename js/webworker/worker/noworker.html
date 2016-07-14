@@ -1,4 +1,16 @@
 <html>
+<head>
+<style>
+    #mario {
+      position: relative;
+      top: 0;
+      left: 0;
+      width: 100px;
+      height: 100px;
+      transition: all 2s ease-in-out;
+    }
+  </style>
+</head>
   <body>
     <h1>This is No Web Worker DEMO Page</h1>
 
@@ -12,22 +24,11 @@
 
     <script>
       let img = document.querySelector("#mario");
-      var left=0;
-      var plus=6;
-      var scale=1
-      function move(){
-        img.style.paddingLeft = left += plus;
-        if(left>400||left<0){
-          plus *= -1;
-          img.style.transform="scaleX(" +  scale  + ")"
-        }
-      }
-      var setI;
+      addEventListener("transitionend",function(){
+        img.style.transform = "translate(0px, 0px)";
+      }, true);
       function UIStart() {
-        setI = setInterval(move,20);
-      }
-      function UIstop() {
-        clearInterval(setI)
+        img.style.transform = "translate(400px, 0px)";
       }
       function calcPrimes(data) {
           var primes = [];
