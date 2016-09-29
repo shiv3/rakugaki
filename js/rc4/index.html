@@ -1,0 +1,39 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <script src="rc4.js"></script>
+    </head>
+    <body>
+        <div>
+            平文　:<input type="text" id="plane">
+            鍵:<input type="text" id="key">
+            <button onClick="enc()">暗号化</button>
+        </div>
+        <div>
+            暗号文:<input type="text" id="encrypt">　　　　　　　　　　<button onClick="dec()">復号化</button>
+            
+        </div>
+        <div>
+            結果:[<span id="result"></span>]
+        </div>
+        <script>
+            const enc = () => {
+                let p = document.getElementById("plane").value;
+                let k = document.getElementById("key").value;
+                if(!p==""&&!k==""){
+                    let result = RC4(p,k);
+                    document.getElementById("result").textContent = result;
+                    document.getElementById("encrypt").value = result;
+                }else{
+                    document.getElementById("result").textContent="文か鍵がないヨ~"
+                }
+
+            }
+            const dec = () => {
+                let p = document.getElementById("encrypt").value;
+                let k = document.getElementById("key").value;
+                document.getElementById("result").textContent = RC4(p,k);
+            }
+        </script>
+    </body>
+</html>
