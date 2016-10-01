@@ -6,5 +6,5 @@ title: Top page
 
 # RC4のやつです
 
-- [これ](/js/rc4)
+- [これ](js/rc4)
 

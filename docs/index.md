@@ -3,7 +3,7 @@ layout: post
 title: Top page
 ---
 
-## 落書きページです
+# 落書きページです
 
-- [rc4](/rc4.html)
-- [webworker](/webworker.html)
+- [rc4](rc4.html)
+- [webworker](webworker.html)
