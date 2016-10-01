@@ -1,0 +1,55 @@
+<html>
+<head>
+<style>
+    #image {
+      position: relative;
+      top: 0;
+      left: 0;
+      width: 100px;
+      height: 100px;
+      transition: all 2s ease-in-out;
+    }
+  </style>
+</head>
+  <body>
+    <h1>This is No Web Worker DEMO Page</h1>
+
+    <img src="../img.jpg" id="image" height="100px">
+    <br>
+
+    <button onclick="UIStart()">UIStart</button>
+    <button onclick="StartHeavyFunc()">StartHeavyFunc</button>
+    <div id="result"></div>
+
+    <script>
+      let img = document.querySelector("#image");
+      addEventListener("transitionend",function(){
+        img.style.transform = "translate(0px, 0px)";
+      }, true);
+      function UIStart() {
+        img.style.transform = "translate(400px, 0px)";
+      }
+      function calcPrimes(data) {
+          var primes = [];
+          if (data >= 2) primes.push(2);
+          for (i = 3; i <= data; i += 2) {
+              for (j = 0; i > primes[j] * primes[j] && i % primes[j] != 0; j++);
+              if (i < primes[j] * primes[j]) primes.push(i);
+          }
+          return primes.length;
+      }
+      function HeavyFunc(num){
+        cnt = calcPrimes(num);
+        return cnt;
+      }
+      function StartHeavyFunc() {
+        document.querySelector("#result").textContent +="重たい処理がスタートしました";
+        document.querySelector("#result").textContent += "10000000までの素数は" + HeavyFunc(10000000) + "個です";
+      }
+
+
+    </script>
+
+  </body>
+
+</html>

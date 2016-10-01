@@ -1,0 +1,56 @@
+<html>
+  <head>
+    <style>
+        #mario {
+          position: relative;
+          top: 0;
+          left: 0;
+          width: 100px;
+          height: 100px;
+          transition: all 2s ease-in-out;
+        }
+      </style>
+    <script src="parallel.js"></script>
+  </head>
+  <body>
+    <h1>This is Parallel.js DEMO Page</h1>
+    <img src="../img.jpg" id="mario" height="100px">
+    <br>
+    <button onclick="UIStart()">UIStart</button>
+    <button onclick="StartHeavyFunc()">StartHeavyFunc</button>
+
+    <div id="result"></div>
+
+  </body>
+  <script>
+
+  function StartHeavyFunc(){
+    document.querySelector("#result").textContent +="重たい処理がスタートしました";
+    var p = new Parallel(10000000);
+    p.spawn(function (data) {
+      var primes = [];
+      if (data >= 2) primes.push(2);
+      for (i = 3; i <= data; i += 2) {
+          for (j = 0; i > primes[j] * primes[j] && i % primes[j] != 0; j++);
+          if (i < primes[j] * primes[j]) primes.push(i);
+      }
+      return primes.length;
+    }).then(function (data) {
+      document.querySelector("#result").textContent += "10000000までの素数は" + data + "個です";
+
+    });
+  }
+
+
+  </script>
+
+  <script>
+    let img = document.querySelector("#mario");
+    addEventListener("transitionend",function(){
+      img.style.transform = "translate(0px, 0px)";
+    }, true);
+    function UIStart() {
+      img.style.transform = "translate(400px, 0px)";
+    }
+  </script>
+</html>

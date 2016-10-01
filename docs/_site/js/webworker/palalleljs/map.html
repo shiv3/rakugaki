@@ -1,0 +1,73 @@
+<html>
+  <head>
+    <style>
+        #mario {
+          position: relative;
+          top: 0;
+          left: 0;
+          width: 100px;
+          height: 100px;
+          transition: all 2s ease-in-out;
+        }
+      </style>
+    <script src="parallel.js"></script>
+  </head>
+  <body>
+    <h1>This is Parallel.js DEMO Page</h1>
+    <img src="../img.jpg" id="mario" height="100px">
+    <br>
+    <button onclick="UIStart()">UIStart</button>
+    <button onclick="StartHeavyFunc()">StartHeavyFunc</button>
+
+    <div id="result"></div>
+
+  </body>
+  <script>
+
+  var isPrime = function(n) {
+    var result = []
+   for (var i = 2; i<= Math.sqrt(n); i++)
+    if (n % i == 0) return false;
+   return true;
+  };
+
+  var arrCheck = function(arr){
+    var results=[];
+    arr.forEach(function(n){
+      if(isPrime(n))results.push(n);
+    });
+    console.log(results);
+    return results;
+  }
+
+  var calcPrimes = function(max) {
+    var thread = 10
+    odds=[];for(var i=1;i<max;i+=Math.ceil(max/thread)){odd=[];for(var j=i;j<i+Math.ceil(max/thread);j+=2)odd.push(j);odds.push(odd)}
+
+    var p = new Parallel(odds);
+    p.map(function(n){return arrCheck(n);console.log(n)}).then(function(r){console.log(r)})
+    console.log(p);
+    // p.map(arrCheck).then(function(r){console.log(r)})
+  }
+
+  function StartHeavyFunc(){
+    document.querySelector("#result").textContent +="重たい処理がスタートしました";
+    calcPrimes(100);
+    // p.spawn().then(function (data) {
+    //   document.querySelector("#result").textContent += "10000000までの素数は" + data + "個です";
+    // });
+  }
+
+
+  </script>
+
+  <script>
+    let img = document.querySelector("#mario");
+    addEventListener("transitionend",function(){
+      img.style.transform = "translate(0px, 0px)";
+    }, true);
+    function UIStart() {
+      img.style.transform = "translate(400px, 0px)";
+    }
+  </script>
+</html>
