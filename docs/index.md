@@ -1,7 +1,8 @@
 ---
-layout: posts
+layout: post
+title: Top page
 ---
 
-## トップページ
+## 落書き
 
 [JS](js)
