@@ -10,7 +10,9 @@
 
 int main(void){
         int fd[2];
-        pid_t pid　= fork();
+        pid_t pid = fork();
+
+        // printf("fd[0]:%d,fd[1]:%d",fd[0],fd[1]);
 
         if(pid == 0) {
           close(fd[1]);
