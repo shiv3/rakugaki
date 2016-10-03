@@ -5,7 +5,7 @@ const _require = (Browser_module,r_module) => {
     return (typeof require === 'undefined') ? window[Browser_module] : require(r_module);
 }
 const _exports = (r_module) => {
-     (typeof module === 'undefined') ? 0 : module.exports = r_module;
+     (typeof module === 'undefined') ? window[r_module] = r_module : module.exports = r_module;
 }
 
 
