@@ -7,8 +7,6 @@ const _require = (Browser_module,r_module) => {
 const _exports = (r_module) => {
      (typeof module === 'undefined') ? window[r_module] = r_module : module.exports = r_module;
 }
-
-
 let XMLHttpRequest = _require("XMLHttpRequest","xhr2")
 
 class Crawler{
