@@ -13,7 +13,7 @@ const get_glow_color = (username,date=(new Date())) => {
     let callback = (data) => {
         if(data != undefined){
             let gen_not_push_time = (created_at) =>{
-                return new Date(date - new Date(created_at)).getUTCDate()
+                return new Date(date - new Date(created_at)).getUTCDate()-1
             }
             let latestPush = data.filter((q)=>{return q.type=="PushEvent"})[0];
             let todayspush = data.filter((q)=>{return q.type=="PushEvent"&&(gen_not_push_time(q.created_at))==0})
@@ -48,4 +48,4 @@ const get_glow_color = (username,date=(new Date())) => {
     }
     c.getevents().then(callback)
 }
-get_glow_color("shiv3",new Date("2016-10-3"))
+get_glow_color("shiv3",new Date())
