@@ -25,17 +25,22 @@ api = twitter.Api(auth["consumer_key"],
                   auth["access_token_secret"]
                  )
 
-USERS = ['hide_clone']
 
-statuses =  api.GetUserTimeline(screen_name="hide_clone",count=10)
+USER = 'hide_clone'
+def get_positive(USER):
+    statuses =  api.GetUserTimeline(screen_name=USER,count=10)
 
-positive = []
-r = re.compile(u'、[^、]*、')
-for t in statuses:
-    if not r.search(t.text) is None:
-        positive.append( [ t.text.split(u"、") , t.created_at ])
+    positive = []
+    r = re.compile(u'、[^、]*、')
+    for t in statuses:
+        if not r.search(t.text) is None:
+            positive.append( [ t.text.split(u"、") , t.created_at ])
 
-for p in positive:
-    date = dateutil.parser.parse(p[1])
-    print  str(date.month) + "/"  + str(date.day) + " " + ",".join(p[0])
+    for p in positive:
+        date = dateutil.parser.parse(p[1])
+        print  str(date.month) + "/"  + str(date.day) + " " + ",".join(p[0])
 
+
+if __name__ == '__main__':
+    user_name = raw_input('Enter positive user: ')
+    get_positive(user_name)
