@@ -79,6 +79,7 @@
 	let next = recenttime[0];
 	if(next){
 	    console.log("次の" + vehicle + "まであと " + new Date( recenttime[0] - now ).getMinutes() + " 分です");
+	    document.write("次の" + vehicle + "まであと " + new Date( recenttime[0] - now ).getMinutes() + " 分です");
 	    if(recenttime[1]){
 	        console.log("その次の" + vehicle + "まであと " + new Date( recenttime[1] - now ).getMinutes() + " 分です");
 	    }else{
