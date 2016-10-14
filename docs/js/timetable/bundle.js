@@ -45,6 +45,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	const $ = __webpack_require__(1);
+	jQuery = $;
 	const JapaneseHolidays = __webpack_require__(2);
 	const DateWithOffset = __webpack_require__(5);
 	// let timetable = require("./timetable.json");
@@ -75,7 +76,6 @@
 	    let recenttime = timetables.filter((d)=>{ return now < d   });
 	    return recenttime;
 	}
-
 
 
 	window.onload = () =>{

@@ -1,4 +1,5 @@
 const $ = require("jquery");
+jQuery = $;
 const JapaneseHolidays = require('japanese-holidays');
 const DateWithOffset = require("date-with-offset");
 // let timetable = require("./timetable.json");
@@ -29,7 +30,6 @@ const nextTime = (time) =>{
     let recenttime = timetables.filter((d)=>{ return now < d   });
     return recenttime;
 }
-
 
 
 window.onload = () =>{
