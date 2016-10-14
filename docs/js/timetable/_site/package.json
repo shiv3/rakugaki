@@ -1,0 +1,17 @@
+{
+  "name": "timetable",
+  "version": "1.0.0",
+  "description": "",
+  "main": "table.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "date-with-offset": "^1.0.1",
+    "japanese-holidays": "^1.0.6",
+    "jquery": "^3.1.1",
+    "json-loader": "^0.5.4"
+  }
+}
