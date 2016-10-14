@@ -17,29 +17,42 @@ const dayparse = (days) =>{
 }
 
 let now = new Date();
-let timetables;
-if(JapaneseHolidays.isHoliday(now)){
-    timetables = dayparse (timetable.holiday);
-}else{
-    timetables = dayparse (timetable.weekday);
-}
 
-let vehicle = "バス"; //電車
-
-
-let recenttime = timetables.filter((d)=>{ return now < d   });
-console.log("現在時刻:" + now);
-console.log("次の" + vehicle + "は" + new Date(recenttime[0]));
-let next = recenttime[0];
-if(next){
-    console.log("次の" + vehicle + "まであと " + new Date( recenttime[0] - now ).getMinutes() + " 分です");
-    document.write("次の" + vehicle + "まであと " + new Date( recenttime[0] - now ).getMinutes() + " 分です");
-    if(recenttime[1]){
-        console.log("その次の" + vehicle + "まであと " + new Date( recenttime[1] - now ).getMinutes() + " 分です");
+const nextTime = (time) =>{
+    let timetables;
+    if(JapaneseHolidays.isHoliday(now)){
+        timetables = dayparse (timetable.holiday);
     }else{
-        console.log("その次の" + vehicle + "はもうありません");
+        timetables = dayparse (timetable.weekday);
     }
-}else{
-    console.log("次の" + vehicle + "はもうありません");
+
+    let recenttime = timetables.filter((d)=>{ return now < d   });
+    return recenttime;
 }
 
+
+
+window.onload = () =>{
+    const display = (d) => {
+        console.log(d);
+        document.body.innerHTML += "<p>" + d + "</p>";
+    }
+    let vehicle = "バス"; //電車
+    nexts = nextTime(now);
+    display("現在時刻:" + now);
+    display("次の" + vehicle + "は" + new Date(nexts[0]));
+
+    let next = nexts[0];
+    if(next){
+        display("次の" + vehicle + "まであと " + new Date( nexts[0] - now).getMinutes() + " 分です");
+    
+        if(nexts[1]){
+            display("その次の" + vehicle + "まであと " + new Date( nexts[1] - now ).getMinutes() + " 分です");
+        }else{
+            display("その次の" + vehicle + "はもうありません");
+        }
+    }else{
+        display("次の" + vehicle + "はもうありません");
+    }
+
+}
