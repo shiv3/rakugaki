@@ -10,6 +10,7 @@ window.onload = () => {
     }
     var context = new SupportedAudioContext();
     
+    console.log("test")
 
 
 
