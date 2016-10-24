@@ -1,45 +1,40 @@
 window.onload = () => {
-    var SOUND_URL = 'test3.mp3';
+    let SOUND_URL = 'test3.mp3';
 
-    // Web Audio APIが使えるか確認しつつ、contextをつくる
-    var SupportedAudioContext;
+
+    let SupportedAudioContext;
     try {
         SupportedAudioContext = window.AudioContext || window.webkitAudioContext;
     } catch(e) {
         throw new Error('Web Audio API is not supported.');
     }
-    var context = new SupportedAudioContext();
-    
-    console.log("test")
+    let context = new SupportedAudioContext();
+    let buffer;
 
-
-
-    // 音声ファイルのロード
-    var buffer;
-    (function  () {
-        var request = new XMLHttpRequest();
+    (() => {
+        let request = new XMLHttpRequest();
         request.open('GET', SOUND_URL, true);
-        request.responseType = 'arraybuffer'; // ArrayBufferとしてロード
+        request.responseType = 'arraybuffer'; 
         request.send();
-        request.onload = function () {
-            // contextにArrayBufferを渡し、decodeさせる
-            context.decodeAudioData(request.response, function (buf) {
+        request.onload = () => {
+            
+            context.decodeAudioData(request.response, (buf) => {
                 buffer = buf;
             });
         };
     })();
 
     const createCanvas = () => {
-        var canvas = document.getElementById('canvas'),
+        let canvas = document.getElementById('canvas'),
           ctx = canvas.getContext('2d')
         return ctx;
     }
 
     // click時に再生
-    $('#button').on('click', function (e) {
+    $('#button').on('click', (e) => {
         e.preventDefault();
 
-        var source = context.createBufferSource();
+        let source = context.createBufferSource();
         source.buffer = buffer;
         source.connect(context.destination);
         source.start(0);
@@ -50,8 +45,8 @@ window.onload = () => {
         source.connect(analyser);
         analyser.fftSize = 128;
 
-        var bufferLength = analyser.frequencyBinCount;
-        var dataArray = new Uint8Array(bufferLength);
+        let bufferLength = analyser.frequencyBinCount;
+        let dataArray = new Uint8Array(bufferLength);
         canvasCtx = createCanvas();
         canvasCtx.clearRect(0, 0, WIDTH, HEIGHT);
 
@@ -65,11 +60,11 @@ window.onload = () => {
             canvasCtx.fillStyle = 'rgb(0, 0, 0)';
             canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
 
-            var barWidth = (WIDTH / bufferLength) * 2.5;
-            var barHeight;
-            var x = 0;
+            let barWidth = (WIDTH / bufferLength) * 2.5;
+            let barHeight;
+            let x = 0;
 
-            for(var i = 0; i < bufferLength; i++) {
+            for(let i = 0; i < bufferLength; i++) {
                 barHeight = dataArray[i]/2;
 
                 canvasCtx.fillStyle = 'rgb(' + (barHeight+100) + ',50,50)';
@@ -79,7 +74,6 @@ window.onload = () => {
             }
         }
         draw();
-
 
     });
 };
