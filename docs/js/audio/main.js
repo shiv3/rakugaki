@@ -11,23 +11,33 @@ window.onload = () => {
     let context = new SupportedAudioContext();
     let buffer;
 
-    (() => {
+    {
         let request = new XMLHttpRequest();
         request.open('GET', SOUND_URL, true);
         request.responseType = 'arraybuffer'; 
         request.send();
         request.onload = () => {
-            
             context.decodeAudioData(request.response, (buf) => {
                 buffer = buf;
             });
         };
-    })();
+    }
 
     const createCanvas = () => {
         let canvas = document.getElementById('canvas'),
           ctx = canvas.getContext('2d')
         return ctx;
+    }
+    const changeVolume = (e) => {
+
+    }
+    const createVolume = () => {
+        let body = document.querySelector('body');
+        let volume = document.createElement("input");
+        body.appendChild(volume);
+        volume.id = "volumebar";
+        volume.type = "range";
+        return volume;
     }
 
     // click時に再生
@@ -39,6 +49,8 @@ window.onload = () => {
         source.connect(context.destination);
         source.start(0);
 
+        volume = createVolume();
+
         WIDTH = 800;
         HEIGHT = 300;
         analyser = context.createAnalyser();
@@ -49,9 +61,6 @@ window.onload = () => {
         let dataArray = new Uint8Array(bufferLength);
         canvasCtx = createCanvas();
         canvasCtx.clearRect(0, 0, WIDTH, HEIGHT);
-
-        
-
 
         let draw = () =>{
             drawVisual = requestAnimationFrame(draw);
