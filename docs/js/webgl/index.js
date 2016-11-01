@@ -1,4 +1,2 @@
 // this is webgl rakguaki
-
-require("main.js")
-
+let canvas = require("main");
