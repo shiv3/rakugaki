@@ -63,14 +63,15 @@
 	        this.camera = camera;
 	        this.renderer = renderer;
 	        this.position = [0,0,0]
-	        this.createBox(200,200,200,Math.random()*16711680,this.position);
+	        this.createBox(200,200,200, Math.random()*16711680 /* & 0x1111ee */ ,this.position);
 	        this.animete();
 	    }
 	    createBox(size_x,size_y,size_z,color,position){
 	        this.geometry = new THREE.BoxGeometry( size_x,size_y, size_z );
-	        this.material = new THREE.MeshBasicMaterial( { color: color, wireframe: true } );
+	        this.material = new THREE.MeshLambertMaterial( { color: color, wireframe: false } );
 	        
 	        this.mesh = new THREE.Mesh( this.geometry, this.material );
+	        this.mesh.receiveShadow = true;
 	        this.scene.add( this.mesh );
 	        this.renderer.render( this.scene, this.camera );
 
@@ -101,14 +102,18 @@
 	        this.WIDTH =   window.innerHeight;
 
 	        this.init();
-	        let randRange_H = this.HEIGHT;
-	        let randRange_W = this.WIDTH;
+	        this.createLight();
+
+	        let randRange_H = this.HEIGHT + 300;
+	        let randRange_W = this.WIDTH + 300;
 	        let randRange_Z = 1000;
+
+	        this.boxnum = 20;
 
 	        this.box1 = new Box(this.scene,this.camera,this.renderer);
 	        this.box1.setPosition([Math.random()*randRange_H - randRange_H/2 , Math.random()*randRange_W - randRange_W/2 ,Math.random()*randRange_Z - randRange_Z/2 ]);   
 	        this.boxes = [];
-	        for(let i=0;i<10;i++){
+	        for(let i=0;i<  this.boxnum; i++){
 	            let box = new Box(this.scene,this.camera,this.renderer);
 	            box.setPosition([Math.random()*randRange_H - randRange_H/2 , Math.random()*randRange_W - randRange_W/2 ,Math.random()*randRange_Z - randRange_Z/2 ]);   
 	            this.boxes.push(box); 
@@ -123,6 +128,11 @@
 	        this.renderer.setSize( this.HEIGHT, this.WIDTH );
 	 
 	        document.body.appendChild( this.renderer.domElement );
+	    }
+	    createLight(){
+	        this.light = new THREE.DirectionalLight(0xffffff);
+	        this.light.position.set(0, 1 , 1).normalize();
+	        this.scene.add( this.light );
 	    }
 	    createDefaultBox(){
 	        this.geometry = new THREE.BoxGeometry( 200, 200, 200 );
