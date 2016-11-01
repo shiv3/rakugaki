@@ -55,43 +55,91 @@
 	// this is webgl rakguaki
 	console.log("this is main script!");
 	const THREE = __webpack_require__(2);
+	// const $     = require("jquery"); //使わんかった
+
+	class Box{
+	    constructor(scene,camera,renderer,position){
+	        this.scene = scene;
+	        this.camera = camera;
+	        this.renderer = renderer;
+	        this.position = [0,0,0]
+	        this.createBox(200,200,200,Math.random()*16711680,this.position);
+	        this.animete();
+	    }
+	    createBox(size_x,size_y,size_z,color,position){
+	        this.geometry = new THREE.BoxGeometry( size_x,size_y, size_z );
+	        this.material = new THREE.MeshBasicMaterial( { color: color, wireframe: true } );
+	        
+	        this.mesh = new THREE.Mesh( this.geometry, this.material );
+	        this.scene.add( this.mesh );
+	        this.renderer.render( this.scene, this.camera );
+
+	        this.setPosition(position);
+
+	        this.anime = ()=>{
+	            this.mesh.rotation.x += 0.01;
+	            this.mesh.rotation.y += 0.02;
+	            this.renderer.render( this.scene, this.camera );
+	            requestAnimationFrame( this.anime );
+	        }    
+	    }
+	    setPosition(position){
+	        this.mesh.position.set(...position);
+	    }
+	    animete(){
+	        this.anime();
+	    }
+	    
+	}
 
 	class three{
 	    constructor(){
 	        this.parent = document.body;
 	        // parent.style.backgroundColor = "333377";
 
-	        this.HEIGHT =  400;
-	        this.WIDTH =  400;
+	        this.HEIGHT =  window.innerWidth;
+	        this.WIDTH =   window.innerHeight;
 
 	        this.init();
-	        this.animate();
+	        let randRange_H = this.HEIGHT;
+	        let randRange_W = this.WIDTH;
+	        let randRange_Z = 1000;
+
+	        this.box1 = new Box(this.scene,this.camera,this.renderer);
+	        this.box1.setPosition([Math.random()*randRange_H - randRange_H/2 , Math.random()*randRange_W - randRange_W/2 ,Math.random()*randRange_Z - randRange_Z/2 ]);   
+	        this.boxes = [];
+	        for(let i=0;i<10;i++){
+	            let box = new Box(this.scene,this.camera,this.renderer);
+	            box.setPosition([Math.random()*randRange_H - randRange_H/2 , Math.random()*randRange_W - randRange_W/2 ,Math.random()*randRange_Z - randRange_Z/2 ]);   
+	            this.boxes.push(box); 
+	        }
 	    }
 	    init() {
 	        this.scene = new THREE.Scene();
 	        this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 10000 );
 	        this.camera.position.z = 1000;
+	        
+	        this.renderer = new THREE.WebGLRenderer();
+	        this.renderer.setSize( this.HEIGHT, this.WIDTH );
+	 
+	        document.body.appendChild( this.renderer.domElement );
+	    }
+	    createDefaultBox(){
 	        this.geometry = new THREE.BoxGeometry( 200, 200, 200 );
 	        this.material = new THREE.MeshBasicMaterial( { color: 0xff0000, wireframe: true } );
 	 
 	        this.mesh = new THREE.Mesh( this.geometry, this.material );
 	        this.scene.add( this.mesh );
-	 
-	        this.renderer = new THREE.WebGLRenderer();
-	        this.renderer.setSize( window.innerWidth, window.innerHeight );
-	 
-	        document.body.appendChild( this.renderer.domElement );
-	    }
-	    animate() {
-	        let anim = ()=>{
+	        this.anime = ()=>{
 	            this.mesh.rotation.x += 0.01;
 	            this.mesh.rotation.y += 0.02;
 	            this.renderer.render( this.scene, this.camera );
-	            requestAnimationFrame( anim );
+	            requestAnimationFrame( this.anime );
 	        }
-	        anim();
 	    }
-	    
+	    animate() {
+	        this.anime();
+	    }
 	    createCanvas(parent){
 	        this.parent = parent;
 	        let canvas = document.createElement("canvas");
@@ -115,9 +163,28 @@
 	        return ctx;
 	    }
 	}
+	let anim2 = (box,speed_x,speed_y) => {
+	    box.mesh.rotation.x += 0.001 * speed_x;
+	    box.mesh.rotation.y += 0.001 * speed_y;
+	    box.renderer.render( t.scene, t.camera );
+	}
 
 	window.onload = () =>{
-	     t = new three()
+	     t = new three();
+	     t.box1.anime = () => {
+	        anim2(t.box1,Math.random() * 20);
+	        requestAnimationFrame( t.box1.anime );
+	     }
+	     t.boxes.forEach((b)=>{
+	            let range = 1;
+	            let randX = Math.random();
+	            let randY = Math.random();
+	        b.anime = () => {
+	            anim2(b,(randX - range/2) * 10,(randY - range/2) * 10);
+	            requestAnimationFrame( b.anime );
+	        }
+	    })
+	     
 	}
 
 	module.exports = three;
