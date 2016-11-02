@@ -6,7 +6,10 @@ module.exports = {
   },
   module: {
     loaders: [
-        { test: /\.(glsl|vs|fs)$/, loader: 'shader' },
+        {
+                test: /\.glsl$/,
+                loader: 'webpack-glsl'
+        }
     ],
   }
 };
