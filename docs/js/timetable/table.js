@@ -17,17 +17,15 @@ const dayparse = (days) =>{
     })
 }
 
-let now = new Date();
-
 const nextTime = (time) =>{
     let timetables;
-    if(JapaneseHolidays.isHoliday(now)){
+    if(JapaneseHolidays.isHoliday(time)){
         timetables = dayparse (timetable.holiday);
     }else{
         timetables = dayparse (timetable.weekday);
     }
 
-    let recenttime = timetables.filter((d)=>{ return now < d   });
+    let recenttime = timetables.filter((d)=>{ return time < d   });
     return recenttime;
 }
 
