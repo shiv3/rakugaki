@@ -1,0 +1,171 @@
+<head>
+  <meta charset="utf-8">
+  <script src="http://code.jquery.com/jquery-2.2.4.js"></script>
+</head>
+
+<body>
+  <p>
+    Monsterをすべて倒せるPlayer nameをslackでavisに直接投げてね。
+  </p>
+  <div id="content">
+
+  </div>
+  player name
+  <input type="text" id="name">
+  <button id="start">スタート</button>
+  hard_mode:
+  <input type="checkbox" id="hard">
+  <table id="table" border="1">
+    <tr>
+      <th>
+
+      </th>
+      <th>
+        Player
+      </th>
+      <th>
+        Monster
+      </th>
+    </tr>
+    <tr id="name">
+      <th>name</th>
+      <td class="value_p">name</td>
+      <td class="value_m">m_hp</td>
+    </tr>
+    <tr id="hp">
+      <th>hp</th>
+      <td class="value_p">hp</td>
+      <td class="value_m">m_hp</td>
+    </tr>
+    <tr id="atk">
+      <th>atk</th>
+      <td class="value_p">hp</td>
+      <td class="value_m">m_hp</td>
+    </tr>
+  </table>
+  (very hard:Hardでカンマ無しに挑戦!)
+</body>
+<script>
+  (function() {
+    var Monster = function(m_name, m_hp, m_atk) {
+      this.name = m_name;
+      this.hp = m_hp;
+      this.atk = m_atk;
+    }
+    var Monster = function(m_name, m_hp, m_atk) {
+      this.name = m_name;
+      this.hp = m_hp;
+      this.atk = m_atk;
+    }
+    var Player = function(p_name, p_hp, p_atk) {
+      this.name = p_name;
+      this.hp = p_hp;
+      this.atk = p_atk;
+    }
+    P_generate = function() {
+      if (name == "") name = "名無しの権兵衛"
+      if ($("#hard")[0].checked) {
+        name = name.split(",").map(function(a) {
+          if (Number(a.replace(/[^0-9]/g, "")) > 100) {
+            ret = ""
+            match = a.match(/[^0-9]/g)
+            if (match) {
+              a.match(/[^0-9]/g).forEach(function(a) {
+                ret += a;
+              })
+            }
+
+            return 10 + ret;
+          } else {
+            return a;
+          }
+        });
+        func = "(function(){return  new Player('" + name + "',400,20)})"
+        return eval(func)();
+      } else {
+        func = "(function(){return new Player('" + name + "',400,20)})"
+        return eval(func)();
+      }
+    }
+    show_p = function(arr) {
+      $("#table .value_p").each(function(a) {
+        this.innerHTML = arr[a]
+      })
+    }
+    show_m = function(arr) {
+      $("#table .value_m").each(function(a) {
+        this.innerHTML = arr[a]
+      })
+    }
+    showall = function(p, m) {
+      show_p([p.name, p.hp, p.atk])
+      show_m([m.name, m.hp, m.atk])
+    }
+    $("#start").click(function(a) {
+      name = $("#name")[0].value;
+      p = P_generate(name);
+      m = new Monster("slime", 100, 20)
+      showall(p, m)
+      GameStart(p, m);
+      this.disabled = true;
+    });
+    battle = function(p1, p2) {
+      console.log(p1, p2)
+      p1.hp -= p2.atk
+      p2.hp -= p1.atk
+      if (p1.hp <= 0) {
+        $("#content")[0].innerHTML += p2.name + "に負けた！ <br>"
+        return 1
+      } else if (p2.hp <= 0) {
+        $("#content")[0].innerHTML += p2.name + "に勝った！ <br>"
+        return -1
+      } else {
+        return 0
+      }
+    }
+
+    monsters = [
+      ["Golem", 200, 10],
+      ["デーモン", 50, 100],
+      ["魔王", 2000, 1000]
+    ];
+    battle_flug = true;
+    stage_flub = true;
+    b_stage = 0;
+    one_B = function(p1, m1) {
+      if (battle_flug) {
+        result = battle(p1, m1)
+        if (result == 0) {
+          battle_flug = true;
+        } else if (result > 0) {
+          battle_flug = false;
+          alert("ゲームオーバー!")
+        } else if (result < 0) {
+          if (b_stage < monsters.length) {
+            m1.name = monsters[b_stage][0]
+            m1.hp = monsters[b_stage][1]
+            m1.atk = monsters[b_stage][2]
+            b_stage++;
+          } else {
+            alert("ゲームクリア！")
+            battle_flug = false;
+          }
+        }
+      }
+    }
+    auto_B = function(p1, m1) {
+      if (battle_flug) {
+        setTimeout(function() {
+          auto_B(p1, m1)
+        }, 500);
+      } else {
+
+      }
+      one_B(p1, m1)
+      showall(p1, m1)
+    }
+    GameStart = function() {
+      auto_B(p, m)
+    }
+  })();
+</script>

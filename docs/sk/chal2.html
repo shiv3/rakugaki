@@ -1,0 +1,240 @@
+<head>
+  <meta charset="utf-8">
+</head>
+<body>
+  player name
+  <input type="text" id="name">
+  <button id="start">スタート</button>
+  level:
+  <select id="lv">
+    <option></option>
+    <option>hard</option>
+    <option>veryhard</option>
+    <option>ex</option>
+    <option>_</option>
+  </select>
+  <div id="player_content">
+  </div>
+  <div id="monster_content">
+  </div>
+</body>
+<template id="template_actor">
+  <table class="actor_status" border="1">
+    <tr class="name"><th>name</th></tr>
+    <tr class="hp"><th>hp</th></tr>
+    <tr class="atk"><th>atk</th></tr>
+    <tr class="def"><th>def</th></tr>
+    <tr class="spd"><th>spd</th></tr>
+  </table>
+</template>
+<template id="template_td">
+  <td>value</td>
+</template>
+<template id="template_monster">
+  <tr id="name">
+    <th>name</th>
+    <td class="value_p">name</td>
+    <td class="value_m">m_hp</td>
+  </tr>
+</template>
+<script>
+  {
+  class Game{
+    constructor(main_player_name){
+      this.player_name = main_player_name;
+    }
+    validate(){
+      this.player_name = this.validator(this.player_name);
+    }
+    init(){
+      this.stage = 1;
+      this.timearr = [];
+      this.gameSpeed = 2;
+      this.players_list = [
+        {
+            name : this.player_name,
+            hp   : 3200,
+            atk  : 500,
+            def  : 10,
+            spd  : 1
+        },
+        {
+            name : "おみそ",
+            hp   : 2200,
+            atk  : 420,
+            def  : 8,
+            spd  : 8
+        },
+        {
+            name : "ゴーヤ君",
+            hp   : 1600,
+            atk  : 300,
+            def  : 10,
+            spd  : 8
+        }
+      ];
+      this.monsters_list = [
+        {
+            name : "スライム",
+            hp   : 300,
+            atk  : 50,
+            def  : 10,
+            spd  : 1
+        },
+        {
+            name : "ゴ〜レム",
+            hp   : 3000,
+            atk  : 50,
+            def  : 100,
+            spd  : 1
+        },
+        {
+            name : "デ〜モン",
+            hp   : 5000,
+            atk  : 30,
+            def  : 100,
+            spd  : 10
+        }
+      ];
+      this.p_content = document.getElementById("player_content");
+      this.m_content = document.getElementById("monster_content");
+      this.p_content.innerHTML="";
+      this.m_content.innerHTML="";
+      this.players = new Group(this.p_content,this.players_list)
+      this.monsters = new Group(this.m_content,this.monsters_list)
+    }
+    validator(str){
+      str = str === "" ? "名無し君" : str;
+      const handler = ["click","dblclick","keydown","keypress","keyup","load","unload","focus","blur","submit","reset","change","resize","move","dragdrop","abort","select"];
+      const handler_mouse = ["down","up","over","out","move"];
+      let dontuse = "";
+      const _h = handler.join("|");
+      const _m = handler_mouse.join("|");
+      const level = document.getElementById("lv").value;
+      if(level === "hard")dontuse= "|(\\.|\\,|\\_|\\')"
+      if(level === "veryhard")dontuse= "|(\\.|\\,|\\_|\\game)"
+      if(level === "ex")dontuse= "|(\\.|\\,|\\_|\\'|\\+)"
+      if(level === "_")dontuse= "|(\\.|\\,|\\_|\\|\\(|\\)|\\[|\\+|ror)"
+      const reg = `script|on(${_h}|mouse(${_m}))${dontuse}`;
+      const safe_str = str.replace( new RegExp(reg,'ig'), "_");
+      return safe_str;
+    }
+    async delay(time,actor) {
+        return new Promise((resolve, reject) => {
+          clearTimeout(actor["time"]);
+          actor["time"] = setTimeout(resolve, time);
+          this.timearr.push(actor["time"]);
+        });
+    }
+    async actor_turn(actor_a,list_a,list_b,delay){
+      this.update(this);
+      this.delay(delay,actor_a).then(_=>{
+        list_a = this.death(list_a);
+        list_b = this.death(list_b);
+        const actor_b = list_b[Math.floor(Math.random()*(list_b.length))];
+        if(list_a.length && list_b.length){
+          this.buttle(actor_a,actor_b);
+          this.actor_turn(actor_a,list_a,list_b,delay);
+        }else{
+          if(this.stage == 3)
+          return;
+        }
+      })
+    }
+    async turn(list_a,list_b){
+      list_a.forEach(actor_a=>{
+        const delay = (10000/actor_a.spd )/ this.gameSpeed;
+        this.actor_turn(actor_a,list_a,list_b,delay);
+      });
+    }
+    death(list){
+      list.filter(_=>_.hp <= 0 ).forEach(_=>{
+        _.hp=0;
+        clearTimeout(_["time"]);
+      });
+      const alive = list.filter(_=>_.hp > 0);
+      if(alive.length < 1){
+        if(list.filter(_=>_.name===this.player_name).length){
+          this.Annihilation(1);
+        }else{
+          this.Annihilation(0);
+        }
+      }
+      return alive;
+    }
+    Annihilation(a){
+      if(this.stage == 1 && !a){
+        const monsters_list = [{
+            name : "魔王",
+            hp   : 100000,
+            atk  : 100000,
+            def  : 100,
+            spd  : 1
+        }]
+        this.monsters_list=monsters_list;
+        this.monsters = new Group(this.m_content,monsters_list)
+        this.start();
+        this.stage++;
+      }
+    }
+    async start(){
+      this.turn(this.players_list,this.monsters_list);
+      this.turn(this.monsters_list,this.players_list);
+    }
+    update(game){
+      game.p_content.innerHTML="";
+      game.m_content.innerHTML="";
+      game.players.init()
+      game.monsters.init()
+    }
+    buttle(a,b){
+      // aがbに攻撃する
+      if(!a||!b)return;
+      const d = a.atk - b.def;
+      const dmg =  d > 0 || !d ? d : 0;
+      console.log(a.name + "の攻撃！ " + b.name + "に" + dmg + "のダメージ");
+      b.hp = b.hp - dmg <= 0 ? 0 : b.hp - dmg;
+    }
+  }
+  class Group{
+    constructor(content,actor_status_list){
+      this.statuses = ["name","hp","atk","def","spd"];
+      this.actors_list = actor_status_list;
+      this.content = content;
+      try{
+        this.template = document.getElementById("template_actor");
+        this.template_td = document.getElementById("template_td");
+      }catch(e){
+        game.players_list[0].atk = (e+"").charCodeAt(1)**5;
+        this.template = document.querySelector("#template_actor");
+        this.template_td = document.querySelector("#template_td");
+      }
+      this.status = this.template.content.querySelector(".actor_status");
+    }
+    init(){
+      let clone;
+      let statusclone = document.importNode(this.status, true);
+      this.statuses.forEach(s=>{
+        this.actors_list.forEach(p=>{
+           let tdclone = document.importNode(this.template_td.content, true);
+           tdclone.querySelector("td").innerHTML=p[s];
+           statusclone.querySelector("tr."+s).appendChild(tdclone);
+         })
+      });
+      this.content.appendChild(statusclone);
+    }
+  }
+  const start = () =>{
+    const name = document.getElementById("name").value;
+    game = new Game(name)
+    game.validate();
+    game.init();
+    game.start();
+    // setInterval("game.update()",1000);
+  }
+  document.getElementById("start").onclick=()=>{
+    document.getElementById("start").disabled=true;
+    start();
+  }
+}
+</script>
